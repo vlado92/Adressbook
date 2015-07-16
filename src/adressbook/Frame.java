@@ -3,6 +3,9 @@ package adressbook;
 import java.awt.HeadlessException;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicMenuUI;
 
 public class Frame extends JFrame{
     private final static int VISINA = 700;
@@ -20,8 +23,8 @@ public class Frame extends JFrame{
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        JTabbedPane tp = new JTabbedPane();
-        tp.add(new NewContact());
-        add(tp);
+        SubPanel panel = new SubPanel(this);
+        panel.setVisible(true);
+        add(panel);
     }
 }

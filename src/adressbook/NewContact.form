@@ -20,28 +20,20 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="givenName" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="givenNameText" min="-2" pref="99" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="phoneNumber" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="email" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="adress" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="familyName" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="adressText" alignment="0" pref="100" max="32767" attributes="0"/>
-                          <Component id="emailText" alignment="0" max="32767" attributes="0"/>
-                          <Component id="phoneNumberText" alignment="0" max="32767" attributes="0"/>
-                          <Component id="familyNameText" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
+                  <Component id="givenName" alignment="0" max="32767" attributes="0"/>
+                  <Component id="familyName" alignment="0" max="32767" attributes="0"/>
+                  <Component id="phoneNumber" alignment="0" max="32767" attributes="0"/>
+                  <Component id="email" alignment="0" max="32767" attributes="0"/>
+                  <Component id="adress" alignment="0" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="givenNameText" alignment="0" pref="100" max="32767" attributes="0"/>
+                  <Component id="familyNameText" alignment="0" max="32767" attributes="0"/>
+                  <Component id="phoneNumberText" alignment="0" max="32767" attributes="0"/>
+                  <Component id="emailText" alignment="0" max="32767" attributes="0"/>
+                  <Component id="adressText" alignment="0" max="32767" attributes="0"/>
               </Group>
           </Group>
           <Component id="confirm" alignment="1" max="32767" attributes="0"/>
@@ -51,32 +43,36 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="givenName" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="3" attributes="0">
+                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                      <Component id="givenName" min="-2" pref="18" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="givenNameText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="familyName" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="3" attributes="0">
+                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                      <Component id="familyName" min="-2" pref="18" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="familyNameText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="phoneNumber" min="-2" max="-2" attributes="0"/>
+                  <Component id="phoneNumber" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="phoneNumberText" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="email" min="-2" max="-2" attributes="0"/>
+                  <Component id="email" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="emailText" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="adress" min="-2" max="-2" attributes="0"/>
+                  <Component id="adress" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="adressText" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Component id="confirm" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="1" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -84,39 +80,59 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="givenName">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="Given Name"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="familyName">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="Family Name"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="phoneNumber">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="Phone Number"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="email">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="Email"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="adress">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="Adress"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="givenNameText">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="familyNameText">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="emailText">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="phoneNumberText">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="adressText">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="confirm">
       <Properties>
