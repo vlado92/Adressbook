@@ -2,6 +2,11 @@ package adressbook;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class NewContact extends javax.swing.JPanel {
 
@@ -83,12 +88,12 @@ public class NewContact extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(givenName, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(givenNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(familyName, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -110,6 +115,20 @@ public class NewContact extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public static boolean parsable(String number)
+    {
+        int integer;
+        try{
+            if(number.charAt(0) == '+')
+                integer = Integer.parseInt(number.substring(1));
+            else
+                integer = Integer.parseInt(number);
+        }catch(NumberFormatException ee){
+            return false;
+        }
+        return true;
+    }
+    
     private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
         JFrame frame = new JFrame();
         frame.setAlwaysOnTop(true);
@@ -134,16 +153,54 @@ public class NewContact extends javax.swing.JPanel {
             frame.setVisible(false);
             phoneNumberText.grabFocus();
         }
+        else if(!parsable(phoneNumberText.getText()))
+        {
+                frame.setVisible(true);
+                JOptionPane.showMessageDialog(frame, "Wrong number format");
+                frame.setVisible(false);
+                phoneNumberText.setText("");
+                phoneNumberText.grabFocus();
+        }
         else
         {
             String name = givenNameText.getText();
             String surname = familyNameText.getText();
             String number = phoneNumberText.getText();
-            String email = (emailText.getText().isEmpty())?("N/A"):(emailText.getText());
-            String adress = (adressText.getText().isEmpty())?("N/A"):(adressText.getText());
-            JOptionPane.showMessageDialog(frame, ""+name+" "+surname+", "+number
-            +", " + email + ", "+adress);
+            String emailString = (emailText.getText().isEmpty())?("N/A"):(emailText.getText());
+            String adressString = (adressText.getText().isEmpty())?("N/A"):(adressText.getText());
+                
+            String statament;
+            String host = "jdbc:derby://localhost:1527/Adressbook";
+            try {
+                Connection con = DriverManager.getConnection(host);
+                frame.setVisible(true);
+                JOptionPane.showMessageDialog(frame, "uspjesno vezanje za bazu");
+                frame.setVisible(false);
+                Statement command = con.createStatement();
             
+                try{
+                    statament = "SELECT COUNT(*) FROM Contact";
+                    ResultSet read = command.executeQuery(statament);
+                    read.next();
+                    int ID = read.getInt(1);
+                    frame.setVisible(true);
+                    JOptionPane.showMessageDialog(frame, ""+ID);
+                    frame.setVisible(false);
+                    statament = "INSERT INTO Contact(ID, Name, surname, number, email, adress)"+
+                    "Values ("+(ID)+",'"+name+"','"+surname+"','"+number+"','"+emailString+"','"+adressString+"')";
+                    command.execute(statament);
+                    JOptionPane.showMessageDialog(frame, "Korisnik Unijet u bazu!");
+                    Contacts.addContact(name + " " + surname);
+                }catch(SQLException ex){
+                    frame.setVisible(true);
+                    JOptionPane.showMessageDialog(frame, "neuspjeh pri unosenju u bazu\n" + ex.toString());
+                    frame.setVisible(false);
+                }
+            }catch (SQLException ex) {
+                frame.setVisible(true);
+                JOptionPane.showMessageDialog(frame, "neuspjesno vezanje za bazu\n"+ ex.toString());
+                frame.setVisible(false);
+            }
         }
     }//GEN-LAST:event_confirmActionPerformed
 

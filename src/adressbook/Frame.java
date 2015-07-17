@@ -2,10 +2,6 @@ package adressbook;
 
 import java.awt.HeadlessException;
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicMenuUI;
 
 public class Frame extends JFrame{
     private final static int VISINA = 700;
