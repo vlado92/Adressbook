@@ -1,86 +1,106 @@
 package adressbook;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Contacts extends javax.swing.JPanel {
-    static ArrayList<String> stringArray = new ArrayList<>();
+    static public ArrayList<String> stringArray = new ArrayList<>();
     static String[] stringList;
-    String statament;
-    String host = "jdbc:derby://localhost:1527/Adressbook";
+    
     JFrame frame = new JFrame();
-    Connection con;
-    Statement command;
     
     public static void addContact(String name){
         list.clearSelection();
         stringArray.add(name);
         stringList = new String[stringList.length + 1];
-        for(int i=0; i < stringArray.size(); i++)
-                stringList[i] = stringArray.get(i);
-            list.setListData(stringList);
+        int nameLength;
+        for(int i=0; i < stringArray.size(); i++){
+            nameLength = stringArray.get(i).indexOf("-");
+            if(nameLength > 0)
+                stringList[i] = stringArray.get(i).substring(0, nameLength);
+        }
+        list.setListData(stringList);
     }
+    
     public static void editContact(int index, String name){
         list.clearSelection();
-        stringArray.set(index,name);
         stringList = new String[stringList.length];
-        for(int i=0; i < stringArray.size(); i++)
-                stringList[i] = stringArray.get(i);
+        int nameLength;
+        for(int i=0; i < stringArray.size(); i++){
+            nameLength = stringArray.get(i).indexOf("-");
+            if(nameLength > 0)
+                stringList[i] = stringArray.get(i).substring(0, nameLength);
+        }
             list.setListData(stringList);
     }
     public Contacts() {
         initComponents();
         frame.setAlwaysOnTop(true);
         frame.setLocationRelativeTo(this);
-        connectToDatabase();
-        
-        fillList(list);
+        readTextFileLineByLine();
     }
-    private void connectToDatabase(){
-            try {
-                con = DriverManager.getConnection(host);
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "uspjesno vezanje za bazu");
-                frame.setVisible(false);
-                command = con.createStatement();
-            }catch (SQLException ex) {
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "neuspjesno vezanje za bazu\n"+ ex.toString());
-                frame.setVisible(false);
+    
+    public static void readTextFileLineByLine() {
+        FileReader in = null;
+        //BufferedReader dozvoljava čitanje većeg "komada" datoteke odjednom.
+        BufferedReader bin = null;
+        try {
+            File file = new File(".\\files\\base.txt");
+            stringArray.clear();
+            in = new FileReader(file);
+            bin = new BufferedReader(in);
+            String data;
+            while ((data = bin.readLine()) != null) {
+                stringArray.add(data);
             }
+            list.clearSelection();
+            if(stringArray.isEmpty()){
+                stringList =new String[1];
+                stringList[0] = "NO CONTACT FOUND!";
+                list.setListData(stringList);
+                list.setEnabled(false);
+            }
+            else{
+                for(int i=0; i < stringArray.size(); i++)
+                    if(stringArray.get(i).length() < 2)
+                        stringArray.remove(i);
+                stringList =new String[stringArray.size()];
+                int nameLength;
+                
+                for(int i=0; i < stringArray.size(); i++){
+                    nameLength = stringArray.get(i).indexOf("-");
+                    if(stringArray.get(i).length() > 5){
+                        stringList[i] = stringArray.get(i).substring(0, nameLength);
+                    }
+                }
+                list.setListData(stringList);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.toString());
+        } finally {
+            if (bin != null) {
+                try {
+                    bin.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.toString());
+                }
+            }
+
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.toString());
+                }
+            }
+        }
     }
-    private void fillList(javax.swing.JList list){
-        list.clearSelection();
-        statament = "SELECT * FROM Contact";
-        try{
-         ResultSet read = command.executeQuery(statament);
-         while(read.next()){
-             stringArray.add(""+read.getString("Name") + " " + read.getString("Surname"));
-         }
-        }catch(SQLException ex){
-            frame.setVisible(true);
-            JOptionPane.showMessageDialog(frame, "neuspjeh pri citanju iz baze\n" + ex.toString());
-            frame.setVisible(false);
-        }
-        if(stringArray.isEmpty()){
-            stringList =new String[1];
-            stringList[0] = "NO CONTACT FOUND!";
-            list.setListData(stringList);
-            list.setEnabled(false);
-        }
-        else{
-            stringList =new String[stringArray.size()];
-            for(int i=0; i < stringArray.size(); i++)
-                stringList[i] = stringArray.get(i);
-            list.setListData(stringList);
-        }
-    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -200,12 +220,11 @@ public class Contacts extends javax.swing.JPanel {
         if(list.isEnabled())
         {
             int index = list.getAnchorSelectionIndex();
-            Person person = new Person(index);
+            Person person = new Person(stringArray.get(index), index);
             person.setVisible(true);
             person.setEnabled(true);
             person.setAlwaysOnTop(true);
             person.setLocationRelativeTo(this);
-            System.out.println(index);
         }
     }//GEN-LAST:event_listMouseClicked
 

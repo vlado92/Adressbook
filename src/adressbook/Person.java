@@ -1,28 +1,20 @@
 package adressbook;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Person extends javax.swing.JFrame {
-    String statament;
-    String host = "jdbc:derby://localhost:1527/Adressbook";
     JFrame frame = new JFrame();
-    Connection con;
-    Statement command;
-    static int personIndex;
+    private int Index;
     
-    public Person(int index) {
-        personIndex = index;
+    public Person(String person, int index) {
         initComponents();
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         Enable(false);
-        connectToDatabase();
-        fillData(personIndex);
+        Index = index;
+        fillData(person);
         
     }
     void Enable(boolean enable){
@@ -32,32 +24,26 @@ public class Person extends javax.swing.JFrame {
         adressText.setEnabled(enable);
         emailText.setEnabled(enable);
     }
-    void connectToDatabase(){
-        try {
-                con = DriverManager.getConnection(host);
-                command = con.createStatement();
-            }catch (SQLException ex) {
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "neuspjesno vezanje za bazu\n"+ ex.toString());
-                frame.setVisible(false);
-            }
-    }
-    void fillData(int index){
-        statament = "SELECT * FROM Contact WHERE ID = " + index ;
-        try{
-         ResultSet read = command.executeQuery(statament);
-         while(read.next()){
-             givenNameText.setText(read.getString("Name"));
-             familyNameText.setText(read.getString("Surname"));
-             phoneNumberText.setText(read.getString("Number"));
-             emailText.setText(read.getString("Email"));
-             adressText.setText(read.getString("adress"));
-         }
-        }catch(SQLException ex){
-            frame.setVisible(true);
-            JOptionPane.showMessageDialog(frame, "neuspjeh pri citanju iz baze\n" + ex.toString());
-            frame.setVisible(false);
-        }
+    
+    void fillData(String person){
+        int tempIndex = person.indexOf(" ");
+        String substring = person.substring(tempIndex+1);
+        givenNameText.setText(person.substring(0, tempIndex));
+        
+        tempIndex = substring.indexOf("-");
+        familyNameText.setText(substring.substring(0, tempIndex));
+        
+        substring = substring.substring(tempIndex+1);
+        tempIndex = substring.indexOf("-");
+        phoneNumberText.setText(substring.substring(0, tempIndex));
+        
+        substring = substring.substring(tempIndex+1);
+        tempIndex = substring.indexOf(" ");
+        emailText.setText(substring.substring(0, tempIndex));
+        
+        substring = substring.substring(tempIndex+1);
+        tempIndex = substring.indexOf(";");
+        adressText.setText(substring.substring(0, tempIndex));
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -185,7 +171,7 @@ public class Person extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+   
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
         Enable(true);
     }//GEN-LAST:event_editActionPerformed
@@ -220,43 +206,45 @@ public class Person extends javax.swing.JFrame {
                 phoneNumberText.grabFocus();
         }
         else{
-            String name = givenNameText.getText();
-            String surname = familyNameText.getText();
-            String number = phoneNumberText.getText();
-            String emailString = (emailText.getText().isEmpty())?("N/A"):(emailText.getText());
-            String adressString = (adressText.getText().isEmpty())?("N/A"):(adressText.getText());
-                
-            String statament;
-            String host = "jdbc:derby://localhost:1527/Adressbook";
-            try {
-                Connection con = DriverManager.getConnection(host);
-                Statement command = con.createStatement();
-            
-                try{
-                    statament = "UPDATE Contact " +
-                            "SET Name = '"+name+"', SURNAME = '"+surname+"',"
-                            +"number = '"+number+"', email = '"+emailString+"',"
-                            +"adress = '"+adressString+"'" +
-                            "WHERE ID = " + personIndex;
-                    command.execute(statament);
-                    frame.setVisible(true);
-                    JOptionPane.showMessageDialog(frame, "Korisnik izmjenjen!");
-                    frame.setVisible(false);
-                    Contacts.editContact(personIndex, name + " " + surname);
-                    Enable(false);
-                }catch(SQLException ex){
-                    frame.setVisible(true);
-                    JOptionPane.showMessageDialog(frame, "neuspjeh pri unosenju u bazu\n" + ex.toString());
-                    frame.setVisible(false);
-                }
-            }catch (SQLException ex) {
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "neuspjesno vezanje za bazu\n"+ ex.toString());
-                frame.setVisible(false);
-            }
+            String contact = givenNameText.getText() + " " + familyNameText.getText()
+                    + "-" + phoneNumberText.getText() + "-"
+                    + ((emailText.getText().isEmpty()) ? ("N/A") : (emailText.getText()))
+                    + " " + ((adressText.getText().isEmpty()) ? ("N/A") : (adressText.getText())) + ";";
+            Contacts.stringArray.set(Index, contact);
+            writeTextFileLineByLine();
+            frame.setVisible(true);
+            JOptionPane.showMessageDialog(frame, "Contact changed");
+            frame.setVisible(false);
+            Contacts.editContact(Index, givenNameText.getText() + " " + familyNameText.getText());
+            this.dispose();
         }
     }//GEN-LAST:event_confirm1ActionPerformed
-    
+    public static void writeTextFileLineByLine() {
+        
+        FileWriter out = null;
+        try {
+            int dataInt;
+            out = new FileWriter(".\\files\\base.txt");
+
+            for (int i = 0; i < Contacts.stringArray.size(); i++) {
+                for (int j = 0; j < Contacts.stringArray.get(i).length(); j++) {
+                    out.write(Contacts.stringArray.get(i).charAt(j));
+                }
+                out.write("\n");
+            }
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.toString());
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.toString());
+                }
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adress;
     private javax.swing.JTextField adressText;

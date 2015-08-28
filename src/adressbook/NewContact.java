@@ -1,14 +1,16 @@
 package adressbook;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 
 public class NewContact extends javax.swing.JPanel {
+    private static ArrayList<String> stringArray = new ArrayList<>();
 
     public NewContact() {
         initComponents();
@@ -115,96 +117,117 @@ public class NewContact extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public static boolean parsable(String number)
-    {
+    public static boolean parsable(String number) {
         int integer;
-        try{
-            if(number.charAt(0) == '+')
+        try {
+            if (number.charAt(0) == '+') {
                 integer = Integer.parseInt(number.substring(1));
-            else
+            } else {
                 integer = Integer.parseInt(number);
-        }catch(NumberFormatException ee){
+            }
+        } catch (NumberFormatException ee) {
             return false;
         }
         return true;
     }
-    
+
     private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
         JFrame frame = new JFrame();
         frame.setAlwaysOnTop(true);
         frame.setLocationRelativeTo(this);
-        
-        if(givenNameText.getText().isEmpty()){
+
+        if (givenNameText.getText().isEmpty()) {
             frame.setVisible(true);
             JOptionPane.showMessageDialog(frame, "Insert given name!");
             frame.setVisible(false);
             givenNameText.grabFocus();
-        }
-        else if(familyNameText.getText().isEmpty()){
+        } else if (familyNameText.getText().isEmpty()) {
             frame.setVisible(true);
             JOptionPane.showMessageDialog(frame, "Insert given name!");
             frame.setVisible(false);
             familyNameText.grabFocus();
-        }
-        else if(phoneNumberText.getText().isEmpty())
-        {
+        } else if (phoneNumberText.getText().isEmpty()) {
             frame.setVisible(true);
             JOptionPane.showMessageDialog(frame, "Insert phone number!");
             frame.setVisible(false);
             phoneNumberText.grabFocus();
-        }
-        else if(!parsable(phoneNumberText.getText()))
-        {
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "Wrong number format");
-                frame.setVisible(false);
-                phoneNumberText.setText("");
-                phoneNumberText.grabFocus();
-        }
-        else
-        {
-            String name = givenNameText.getText();
-            String surname = familyNameText.getText();
-            String number = phoneNumberText.getText();
-            String emailString = (emailText.getText().isEmpty())?("N/A"):(emailText.getText());
-            String adressString = (adressText.getText().isEmpty())?("N/A"):(adressText.getText());
-                
-            String statament;
-            String host = "jdbc:derby://localhost:1527/Adressbook";
-            try {
-                Connection con = DriverManager.getConnection(host);
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "uspjesno vezanje za bazu");
-                frame.setVisible(false);
-                Statement command = con.createStatement();
-            
-                try{
-                    statament = "SELECT COUNT(*) FROM Contact";
-                    ResultSet read = command.executeQuery(statament);
-                    read.next();
-                    int ID = read.getInt(1);
-                    frame.setVisible(true);
-                    JOptionPane.showMessageDialog(frame, ""+ID);
-                    frame.setVisible(false);
-                    statament = "INSERT INTO Contact(ID, Name, surname, number, email, adress)"+
-                    "Values ("+(ID)+",'"+name+"','"+surname+"','"+number+"','"+emailString+"','"+adressString+"')";
-                    command.execute(statament);
-                    JOptionPane.showMessageDialog(frame, "Korisnik Unijet u bazu!");
-                    Contacts.addContact(name + " " + surname);
-                }catch(SQLException ex){
-                    frame.setVisible(true);
-                    JOptionPane.showMessageDialog(frame, "neuspjeh pri unosenju u bazu\n" + ex.toString());
-                    frame.setVisible(false);
-                }
-            }catch (SQLException ex) {
-                frame.setVisible(true);
-                JOptionPane.showMessageDialog(frame, "neuspjesno vezanje za bazu\n"+ ex.toString());
-                frame.setVisible(false);
-            }
+        } else if (!parsable(phoneNumberText.getText())) {
+            frame.setVisible(true);
+            JOptionPane.showMessageDialog(frame, "Wrong number format");
+            frame.setVisible(false);
+            phoneNumberText.setText("");
+            phoneNumberText.grabFocus();
+        } else {
+            String contact = givenNameText.getText() + " " + familyNameText.getText()
+                    + "-" + phoneNumberText.getText() + "-"
+                    + ((emailText.getText().isEmpty()) ? ("N/A") : (emailText.getText()))
+                    + " " + ((adressText.getText().isEmpty()) ? ("N/A") : (adressText.getText())) + ";";
+            readTextFileLineByLine();
+            writeTextFileLineByLine(contact);
+            JOptionPane.showMessageDialog(frame, "Korisnik Unijet u bazu!");
+            Contacts.addContact(contact);
         }
     }//GEN-LAST:event_confirmActionPerformed
+    public static void writeTextFileLineByLine(String contact) {
+        
+        FileWriter out = null;
+        try {
+            stringArray.add(contact);
+            int dataInt;
+            out = new FileWriter(".\\files\\base.txt");
 
+            for (int i = 0; i < stringArray.size(); i++) {
+                for (int j = 0; j < stringArray.get(i).length(); j++) {
+                    out.write(stringArray.get(i).charAt(j));
+                }
+                out.write("\n");
+            }
 
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.toString());
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.toString());
+                }
+            }
+        }
+    }
+    public static void readTextFileLineByLine() {
+        FileReader in = null;
+        //BufferedReader dozvoljava čitanje većeg "komada" datoteke odjednom.
+        BufferedReader bin = null;
+        try {
+            File file = new File(".\\files\\base.txt");
+            stringArray.clear();
+            in = new FileReader(file);
+            bin = new BufferedReader(in);
+            String data;
+            while ((data = bin.readLine()) != null) {
+                stringArray.add(data);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.toString());
+        } finally {
+            if (bin != null) {
+                try {
+                    bin.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.toString());
+                }
+            }
+
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.toString());
+                }
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adress;
     private javax.swing.JTextField adressText;
