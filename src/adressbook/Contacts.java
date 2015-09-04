@@ -174,39 +174,40 @@ public class Contacts extends javax.swing.JPanel {
         boolean nesto = true;
         int index=0, index2 = 0;
         ArrayList<String> tempArray = new ArrayList<>();
-        String[] temp;
-        for(int i=0; i < stringArray.size(); i++){
-            index = index2 = 0;
-            nesto = true;
-            if(stringArray.get(i).charAt(0) == search.getText().charAt(0)){
-                for(int k=0; k<search.getText().length(); k++)
-                    if(stringArray.get(i).charAt(k) == search.getText().charAt(k)){
-                        nesto = true;
-                        index2 = i;
-                    }
-                    else{
-                        nesto = false;
-                        break;
-                    }
+        String[] tempString;
+        if(search.getText().isEmpty()){
+        
+        }
+        else{
+            String temp;
+            for(int i=0; i < stringArray.size(); i++){
+                temp = stringArray.get(i).toLowerCase();
+                index = index2 = 0;
+                nesto = true;
+                if(temp.contains(search.getText().toLowerCase())){
+                    nesto = true;
+                }else
+                    nesto = false;
+                if(nesto)
+                    tempArray.add(stringArray.get(i));
+            }
+            if(!tempArray.isEmpty()){
+                int nameLength;
+                tempString =new String[tempArray.size()];
+                for(int i=0; i < tempArray.size(); i++){
+                    nameLength = tempArray.get(i).indexOf("-");
+                        if(nameLength > 0)
+                            tempString[i] = tempArray.get(i).substring(0, nameLength);
+                }
+                list.setListData(tempString);
             }
             else
-                continue;
-            if(nesto)
-                tempArray.add(stringArray.get(index2));
-        }
-        if(!tempArray.isEmpty())
-        {
-            temp =new String[tempArray.size()];
-            for(int i=0; i < tempArray.size(); i++)
-                temp[i] = tempArray.get(i);
-            list.setListData(temp);
-        }
-        else
-        {
-             temp =new String[1];
-             temp[0] = "NO CONTACT FOUND!";
-            list.setListData(temp);
-            list.setEnabled(false);
+            {
+                tempString =new String[1];
+                tempString[0] = "NO CONTACT FOUND!";
+                list.setListData(tempString);
+                list.setEnabled(false);
+            }
         }
     }//GEN-LAST:event_searchButtonActionPerformed
 
@@ -219,12 +220,15 @@ public class Contacts extends javax.swing.JPanel {
     private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
         if(list.isEnabled())
         {
-            int index = list.getAnchorSelectionIndex();
-            Person person = new Person(stringArray.get(index), index);
-            person.setVisible(true);
-            person.setEnabled(true);
-            person.setAlwaysOnTop(true);
-            person.setLocationRelativeTo(this);
+            for(int i=0; i< stringArray.size(); i++)
+                if(stringArray.get(i).contains(list.getSelectedValue().toString())){
+                    Person person = new Person(stringArray.get(i), i);
+                    person.setVisible(true);
+                    person.setEnabled(true);
+                    person.setAlwaysOnTop(true);
+                    person.setLocationRelativeTo(this);
+                    break;
+                }
         }
     }//GEN-LAST:event_listMouseClicked
 
