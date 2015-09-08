@@ -10,33 +10,33 @@ import javax.swing.JOptionPane;
 
 public class Contacts extends javax.swing.JPanel {
     static public ArrayList<String> stringArray = new ArrayList<>();
-    static String[] stringList;
+    static String[] fullName;
     
     JFrame frame = new JFrame();
     
     public static void addContact(String name){
         list.clearSelection();
         stringArray.add(name);
-        stringList = new String[stringList.length + 1];
+        fullName = new String[fullName.length + 1];
         int nameLength;
         for(int i=0; i < stringArray.size(); i++){
             nameLength = stringArray.get(i).indexOf("-");
             if(nameLength > 0)
-                stringList[i] = stringArray.get(i).substring(0, nameLength);
+                fullName[i] = stringArray.get(i).substring(0, nameLength);
         }
-        list.setListData(stringList);
+        list.setListData(fullName);
     }
     
     public static void editContact(int index, String name){
         list.clearSelection();
-        stringList = new String[stringList.length];
+        fullName = new String[fullName.length];
         int nameLength;
         for(int i=0; i < stringArray.size(); i++){
             nameLength = stringArray.get(i).indexOf("-");
             if(nameLength > 0)
-                stringList[i] = stringArray.get(i).substring(0, nameLength);
+                fullName[i] = stringArray.get(i).substring(0, nameLength);
         }
-            list.setListData(stringList);
+            list.setListData(fullName);
     }
     public Contacts() {
         initComponents();
@@ -60,25 +60,22 @@ public class Contacts extends javax.swing.JPanel {
             }
             list.clearSelection();
             if(stringArray.isEmpty()){
-                stringList =new String[1];
-                stringList[0] = "NO CONTACT FOUND!";
-                list.setListData(stringList);
+                fullName =new String[1];
+                fullName[0] = "NO CONTACT FOUND!";
+                list.setListData(fullName);
                 list.setEnabled(false);
             }
             else{
-                for(int i=0; i < stringArray.size(); i++)
-                    if(stringArray.get(i).length() < 2)
-                        stringArray.remove(i);
-                stringList =new String[stringArray.size()];
+                fullName =new String[stringArray.size()];
                 int nameLength;
                 
                 for(int i=0; i < stringArray.size(); i++){
                     nameLength = stringArray.get(i).indexOf("-");
                     if(stringArray.get(i).length() > 5){
-                        stringList[i] = stringArray.get(i).substring(0, nameLength);
+                        fullName[i] = stringArray.get(i).substring(0, nameLength);
                     }
                 }
-                list.setListData(stringList);
+                list.setListData(fullName);
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex.toString());
@@ -172,17 +169,22 @@ public class Contacts extends javax.swing.JPanel {
         list.clearSelection();
         list.setEnabled(true);
         boolean nesto = true;
-        int index=0, index2 = 0;
         ArrayList<String> tempArray = new ArrayList<>();
         String[] tempString;
         if(search.getText().isEmpty()){
-        
+            fullName = new String[fullName.length];
+            int nameLength;
+            for(int i=0; i < stringArray.size(); i++){
+                nameLength = stringArray.get(i).indexOf("-");
+                if(nameLength > 0)
+                    fullName[i] = stringArray.get(i).substring(0, nameLength);
+            }
+            list.setListData(fullName);
         }
         else{
             String temp;
             for(int i=0; i < stringArray.size(); i++){
                 temp = stringArray.get(i).toLowerCase();
-                index = index2 = 0;
                 nesto = true;
                 if(temp.contains(search.getText().toLowerCase())){
                     nesto = true;
@@ -212,8 +214,8 @@ public class Contacts extends javax.swing.JPanel {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        list.setListData(stringList);
-        if(!stringList[0].equals("NO CONTACT FOUND!"))
+        list.setListData(fullName);
+        if(!fullName[0].equals("NO CONTACT FOUND!"))
             list.setEnabled(true);
     }//GEN-LAST:event_resetButtonActionPerformed
 
