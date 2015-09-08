@@ -1,5 +1,6 @@
 package adressbook;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JFrame;
@@ -224,7 +225,10 @@ public class Person extends javax.swing.JFrame {
         FileWriter out = null;
         try {
             int dataInt;
-            out = new FileWriter(".\\files\\base.txt");
+            File file = new File(".\\files\\base.txt");
+            if(!file.exists())
+                file.createNewFile();
+            out = new FileWriter(file);
 
             for (int i = 0; i < Contacts.stringArray.size(); i++) {
                 for (int j = 0; j < Contacts.stringArray.get(i).length(); j++) {

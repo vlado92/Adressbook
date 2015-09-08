@@ -174,7 +174,10 @@ public class NewContact extends javax.swing.JPanel {
         try {
             stringArray.add(contact);
             int dataInt;
-            out = new FileWriter(".\\files\\base.txt");
+            File file = new File(".\\files\\base.txt");
+            if(!file.exists())
+                file.createNewFile();
+            out = new FileWriter(file);
 
             for (int i = 0; i < stringArray.size(); i++) {
                 for (int j = 0; j < stringArray.get(i).length(); j++) {
